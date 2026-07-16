@@ -46,11 +46,24 @@ out/aarch64/
 
 ## How it works
 
-The docker image only carries the toolchain and build dependencies. The kernel
-source tree (`linux-6.12.1-msm8916/`), the pmOS config
-(`config-postmarketos-qcom-msm8916.aarch64`) and the output dir are bind-mounted
-into the container at runtime, so the image stays small and the host working
-tree is shared.
+The docker image only carries the toolchain and build dependencies. The pmOS
+config (`config-postmarketos-qcom-msm8916.aarch64`) and the output dir are
+bind-mounted into the container at runtime, so the image stays small.
+
+The kernel source tree is exposed to the container at `/src`, but how it gets
+there depends on the host OS (`uname -s`):
+
+- **Linux** -- bind-mount the local `linux-6.12.1-msm8916/` dir directly. Linux
+  host filesystems are case-sensitive, so this works as-is.
+- **macOS** -- the host is case-insensitive APFS. The msm8916 source contains
+  files that differ only in case (e.g. `net/netfilter/xt_TCPMSS.c` vs
+  `xt_tcpmss.c`); extracting onto APFS silently drops one of each pair and breaks
+  the build (`No rule to make target xt_TCPMSS.o`). So the source is extracted
+  into a **case-sensitive docker named volume** (`ksrc-msm8916`) instead.
+
+On either OS, `build.sh` extracts `v6.12.1-msm8916.tar.gz` on first use (into the
+local dir on Linux, into the volume on macOS). Re-extract with
+`./build.sh --reextract`.
 
 ## Toolchain
 
