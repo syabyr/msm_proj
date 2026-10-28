@@ -1,12 +1,12 @@
 # Cross-build for the CMCC W1A (MSM8909, armv7).  The board runs musl
-# (Alpine), so link statically against the arm-linux-gnueabi toolchain.
+# (Alpine), so link statically against the arm-linux-gnueabihf toolchain.
 
-CC       := arm-linux-gnueabi-gcc
+CC       := arm-linux-gnueabihf-gcc
 LVGL     ?= ../lvgl
 BUILD    ?= build
 
 CFLAGS   ?= -O2
-CFLAGS   += -march=armv7-a -mtune=cortex-a7 -marm -g0 -pthread
+CFLAGS   += -march=armv7-a+fp -mtune=cortex-a7 -marm -g0 -pthread
 CFLAGS   += -DLV_CONF_INCLUDE_SIMPLE -I. -I..
 CFLAGS   += -ffunction-sections -fdata-sections
 LDFLAGS  ?= -static -Wl,--gc-sections -pthread
