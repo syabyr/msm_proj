@@ -1,0 +1,603 @@
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 7.0.0-g4c8ae5a0d030 (mybays@mybays-amd) (arm-none-eabi-gcc (15:13.2.rel1-2) 13.2.1 20231009, GNU ld (2.42-1ubuntu1+23) 2.42) #4 SMP PREEMPT Sat Oct 24 15:10:24 CST 2026
+[    0.000000] CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c5387d
+[    0.000000] CPU: div instructions available: patching division code
+[    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
+[    0.000000] OF: fdt: Machine model: CMCC W1A
+[    0.000000] Memory policy: Data cache writealloc
+[    0.000000] cma: Reserved 64 MiB at 0x9b800000
+[    0.000000] OF: reserved mem: 0x9fa80000..0x9fafffff (512 KiB) map non-reusable ramoops@9fa80000
+[    0.000000] OF: reserved mem: 0x87a00000..0x87bfffff (2048 KiB) nomap non-reusable tz-apps@87a00000
+[    0.000000] OF: reserved mem: 0x87c00000..0x87cdffff (896 KiB) nomap non-reusable rmtfs@87c00000
+[    0.000000] OF: reserved mem: 0x87ce0000..0x87cfffff (128 KiB) nomap non-reusable rfsa@87ce0000
+[    0.000000] OF: reserved mem: 0x87d00000..0x87dfffff (1024 KiB) nomap non-reusable smem@87d00000
+[    0.000000] OF: reserved mem: 0x87e00000..0x87ffffff (2048 KiB) nomap non-reusable tz@87e00000
+[    0.000000] OF: reserved mem: 0x88000000..0x8d4fffff (87040 KiB) nomap non-reusable mpss@88000000
+[    0.000000] OF: reserved mem: 0x8d500000..0x8dbfffff (7168 KiB) nomap non-reusable wcnss@8d500000
+[    0.000000] OF: reserved mem: 0x8dc00000..0x8dcfffff (1024 KiB) nomap non-reusable mba@8dc00000
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000080000000-0x000000009fffffff]
+[    0.000000]   HighMem  empty
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080000000-0x00000000879fffff]
+[    0.000000]   node   0: [mem 0x0000000087a00000-0x000000008dcfffff]
+[    0.000000]   node   0: [mem 0x000000008dd00000-0x000000009fffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x000000009fffffff]
+[    0.000000] percpu: Embedded 17 pages/cpu s39820 r8192 d21620 u69632
+[    0.000000] pcpu-alloc: s39820 r8192 d21620 u69632 alloc=17*4096
+[    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 
+[    0.000000] Kernel command line: w1a.no_dsi_pa root=/dev/mmcblk0p33 rootwait rw log_buf_len=8M  console=tty0 androidboot.hardware=skipjack buildvariant=user selinux=0 lk2nd.pass-ramoops=zap panic=5 lk2nd androidboot.bootdevice=7824900.sdhci androidboot.verifiedbootstate=orange androidboot.veritymode=logging androidboot.keymaster=1 androidboot.serialno=22dec713 androidboot.mode=charger androidboot.baseband=msm mdss_mdp3.panel=1:dsi:0:qcom,mdss_dsi_rm67162_wqvga_cmd:1:
+[    0.000000] Unknown kernel command line parameters "lk2nd buildvariant=user selinux=0", will be passed to user space.
+[    0.000000] printk: log buffer data + meta data: 8388608 + 26214400 = 34603008 bytes
+[    0.000000] printk: early log buf free: 128580(98%)
+[    0.000000] Dentry cache hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 32768 (order: 5, 131072 bytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 131072
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[    0.000000] rcu: Preemptible hierarchical RCU implementation.
+[    0.000000] rcu: 	RCU event tracing is enabled.
+[    0.000000] 	Trampoline variant of Tasks RCU enabled.
+[    0.000000] 	Tracing variant of Tasks RCU enabled.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+[    0.000000] RCU Tasks: Setting shift to 2 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=4.
+[    0.000000] NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+[    0.000000] rcu: srcu_init: Setting srcu_struct sizes based on contention.
+[    0.000000] arch_timer: cp15 timer running at 19.20MHz (virt).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x46d987e47, max_idle_ns: 440795202767 ns
+[    0.000001] sched_clock: 56 bits at 19MHz, resolution 52ns, wraps every 4398046511078ns
+[    0.000019] Switching to timer-based delay loop, resolution 52ns
+[    0.000358] Console: colour dummy device 80x30
+[    0.000382] printk: legacy console [tty0] enabled
+[    0.001459] Calibrating delay loop (skipped), value calculated using timer frequency.. 38.40 BogoMIPS (lpj=192000)
+[    0.001512] CPU: Testing write buffer coherency: ok
+[    0.001586] pid_max: default: 32768 minimum: 301
+[    0.001824] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.001878] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.002331] VFS: Finished mounting rootfs on nullfs
+[    0.003109] /cpus/cpu@0 missing clock-frequency property
+[    0.003177] /cpus/cpu@1 missing clock-frequency property
+[    0.003225] /cpus/cpu@2 missing clock-frequency property
+[    0.003271] /cpus/cpu@3 missing clock-frequency property
+[    0.003307] CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
+[    0.003465] qcom_scm: convention: smc legacy
+[    0.005182] Setting up static identity map for 0x80100000 - 0x80100060
+[    0.005436] rcu: Hierarchical SRCU implementation.
+[    0.005468] rcu: 	Max phase no-delay instances is 1000.
+[    0.005909] Timer migration: 1 hierarchy levels; 8 children per group; 1 crossnode level
+[    0.007568] smp: Bringing up secondary CPUs ...
+[    0.008836] CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
+[    0.010572] CPU2: thread -1, cpu 2, socket 0, mpidr 80000002
+[    0.012108] CPU3: thread -1, cpu 3, socket 0, mpidr 80000003
+[    0.012449] smp: Brought up 1 node, 4 CPUs
+[    0.012550] SMP: Total of 4 processors activated (153.60 BogoMIPS).
+[    0.012581] CPU: All CPU(s) started in SVC mode.
+[    0.012927] Memory: 289752K/524288K available (15360K kernel code, 2096K rwdata, 6572K rodata, 1024K init, 287K bss, 166708K reserved, 65536K cma-reserved, 0K highmem)
+[    0.013649] devtmpfs: initialized
+[    0.027041] VFP support v0.3: implementor 41 architecture 2 part 30 variant 7 rev 5
+[    0.027651] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
+[    0.027723] posixtimers hash table entries: 2048 (order: 2, 16384 bytes, linear)
+[    0.027859] futex hash table entries: 1024 (65536 bytes on 1 NUMA nodes, total 64 KiB, linear).
+[    0.031653] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[    0.033239] DMA: preallocated 256 KiB pool for atomic coherent allocations
+[    0.034945] thermal_sys: Registered thermal governor 'step_wise'
+[    0.035064] cpuidle: using governor menu
+[    0.035357] NET: Registered PF_QIPCRTR protocol family
+[    0.035851] hw-breakpoint: found 5 (+1 reserved) breakpoint and 4 watchpoint registers.
+[    0.035900] hw-breakpoint: maximum watchpoint size is 8 bytes.
+[    0.038046] pstore: Using crash dump compression: deflate
+[    0.038100] printk: legacy console [ramoops-1] enabled
+[    0.038732] pstore: Registered ramoops as persistent store backend
+[    0.038768] ramoops: using 0x80000@0x9fa80000, ecc: 0
+[    0.051411] /soc@0/clock-controller@1800000: Fixed dependency cycle(s) with /soc@0/phy@1ac8300
+[    0.052003] /soc@0/display-controller@1a00000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    0.052089] /soc@0/dsi@1ac8000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000/panel@0
+[    0.052157] /soc@0/dsi@1ac8000: Fixed dependency cycle(s) with /soc@0/display-controller@1a00000
+[    0.052273] /soc@0/dsi@1ac8000/panel@0: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    0.052352] /soc@0/phy@1ac8300: Fixed dependency cycle(s) with /soc@0/clock-controller@1800000
+[    0.058083] /soc@0/clock-controller@1800000: Fixed dependency cycle(s) with /soc@0/phy@1ac8300
+[    0.070798] /soc@0/usb@78d9000: Fixed dependency cycle(s) with /soc@0/usb@78d9000/ulpi/phy
+[    0.076603] /soc@0/display-controller@1a00000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    0.077100] /soc@0/display-controller@1a00000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    0.077345] /soc@0/dsi@1ac8000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000/panel@0
+[    0.077413] /soc@0/dsi@1ac8000: Fixed dependency cycle(s) with /soc@0/display-controller@1a00000
+[    0.077694] /soc@0/dsi@1ac8000/panel@0: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    0.079908] kprobes: kprobe jump-optimization is enabled. All kprobes are optimized if possible.
+[    0.083008] iommu: Default domain type: Translated
+[    0.083064] iommu: DMA domain TLB invalidation policy: strict mode
+[    0.084107] SCSI subsystem initialized
+[    0.084460] libata version 3.00 loaded.
+[    0.084852] usbcore: registered new interface driver usbfs
+[    0.084956] usbcore: registered new interface driver hub
+[    0.085043] usbcore: registered new device driver usb
+[    0.085250] mc: Linux media interface: v0.10
+[    0.085347] videodev: Linux video capture interface: v2.00
+[    0.085507] pps_core: LinuxPPS API ver. 1 registered
+[    0.085544] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[    0.085608] PTP clock support registered
+[    0.092110] Advanced Linux Sound Architecture Driver Initialized.
+[    0.093071] Bluetooth: Core ver 2.22
+[    0.093160] NET: Registered PF_BLUETOOTH protocol family
+[    0.093197] Bluetooth: HCI device and connection manager initialized
+[    0.093241] Bluetooth: HCI socket layer initialized
+[    0.093278] Bluetooth: L2CAP socket layer initialized
+[    0.093326] Bluetooth: SCO socket layer initialized
+[    0.094108] vgaarb: loaded
+[    0.094740] clocksource: Switched to clocksource arch_sys_counter
+[    0.108732] NET: Registered PF_INET protocol family
+[    0.109039] IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)
+[    0.110592] tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 4096 bytes, linear)
+[    0.110667] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    0.110739] TCP established hash table entries: 4096 (order: 2, 16384 bytes, linear)
+[    0.110833] TCP bind hash table entries: 4096 (order: 4, 65536 bytes, linear)
+[    0.111003] TCP: Hash tables configured (established 4096 bind 4096)
+[    0.111151] UDP hash table entries: 256 (order: 2, 14336 bytes, linear)
+[    0.111235] UDP-Lite hash table entries: 256 (order: 2, 14336 bytes, linear)
+[    0.111501] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    0.112269] RPC: Registered named UNIX socket transport module.
+[    0.112325] RPC: Registered udp transport module.
+[    0.112357] RPC: Registered tcp transport module.
+[    0.112387] RPC: Registered tcp-with-tls transport module.
+[    0.112418] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    0.114274] PCI: CLS 0 bytes, default 64
+[    0.116062] Initialise system trusted keyrings
+[    0.116391] workingset: timestamp_bits=30 max_order=17 bucket_order=0
+[    0.117472] NFS: Registering the id_resolver key type
+[    0.117559] Key type id_resolver registered
+[    0.117595] Key type id_legacy registered
+[    0.117638] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[    0.117678] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[    0.119155] Key type cifs.idmap registered
+[    0.119225] jffs2: version 2.2. (NAND) © 2001-2006 Red Hat, Inc.
+[    0.119354] fuse: init (API version 7.45)
+[    0.414839] Key type asymmetric registered
+[    0.414901] Asymmetric key parser 'x509' registered
+[    0.415090] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 243)
+[    0.415142] io scheduler mq-deadline registered
+[    0.415176] io scheduler kyber registered
+[    0.415241] io scheduler bfq registered
+[    0.440852] qcom_smp2p smp2p-hexagon: mbox_request_channel: can't parse "mboxes" property
+[    0.441284] qcom_smp2p smp2p-wcnss: mbox_request_channel: can't parse "mboxes" property
+[    0.444131] msm_serial 78af000.serial: msm_serial: detected port #0
+[    0.444265] msm_serial 78af000.serial: uartclk = 7372798
+[    0.444856] 78af000.serial: ttyMSM0 at MMIO 0x78af000 (irq = 33, base_baud = 460799) is a MSM
+[    0.445709] msm_serial: driver initialized
+[    0.449096] platform 1c00000.gpu: Adding to iommu group 0
+[    0.452139] platform 1a00000.display-controller: Adding to iommu group 1
+[    0.458130] MDP3DBG m3d: core/iface/bus/vsync clocks enabled (survive clk_disable_unused)
+[    0.458213] MDP3DBG m2u APCS_SMMU_VOTE 00001012: mdp_tbu(BIT4)=1 apss_tcu(BIT1)=1
+[    0.477609] brd: module loaded
+[    0.486225] loop: module loaded
+[    0.486841] SCSI Media Changer driver v0.25 
+[    0.489611] spi_qup 78b7000.spi: IN:block:16, fifo:64, OUT:block:16, fifo:64
+[    0.491338] spmi_pmic_arb 200f000.spmi: PMIC arbiter version v2 (0x20010000)
+[    0.504305] SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256) (6 bit encapsulation enabled).
+[    0.504387] CSLIP: code copyright 1989 Regents of the University of California.
+[    0.504646] usbcore: registered new interface driver ax88179_178a
+[    0.504829] usbcore: registered new interface driver cdc_ether
+[    0.504947] usbcore: registered new interface driver net1080
+[    0.505054] usbcore: registered new interface driver cdc_subset
+[    0.505162] usbcore: registered new interface driver cdc_ncm
+[    0.505268] usbcore: registered new interface driver r8153_ecm
+[    0.506743] usbcore: registered new interface driver cdc_acm
+[    0.506793] cdc_acm: USB Abstract Control Model driver for USB modems and ISDN adapters
+[    0.509778] input: pm8xxx_vib_ffmemless as /devices/platform/soc@0/200f000.spmi/spmi-0/0-01/200f000.spmi:pmic@1:vibrator@c000/input/input0
+[    0.512060] rtc-pm8xxx 200f000.spmi:pmic@0:rtc@6000: registered as rtc0
+[    0.512175] rtc-pm8xxx 200f000.spmi:pmic@0:rtc@6000: setting system clock to 1970-02-05T13:29:06 UTC (3072546)
+[    0.512351] i2c_dev: i2c /dev entries driver
+[    0.512728] i2c_qup 78b5000.i2c: using default clock-frequency 100000
+[    0.514449] i2c_qup 78b6000.i2c: using default clock-frequency 100000
+[    0.515979] i2c_qup 78b7000.i2c: using default clock-frequency 100000
+[    0.516058] i2c_qup 78b7000.i2c: 
+[    0.516058]  tx channel not available
+[    0.516114] i2c_qup 78b7000.i2c: error -EBUSY: can't request region for resource [mem 0x078b7000-0x078b74ff]
+[    0.516175] i2c_qup 78b7000.i2c: probe with driver i2c_qup failed with error -16
+[    0.516416] i2c_qup 78b8000.i2c: using default clock-frequency 100000
+[    0.518351] i2c_qup 78b9000.i2c: using default clock-frequency 100000
+[    0.522885] input: pm8941_pwrkey as /devices/platform/soc@0/200f000.spmi/spmi-0/0-00/200f000.spmi:pmic@0:pon@800/200f000.spmi:pmic@0:pon@800:pwrkey/input/input1
+[    0.530517] sdhci: Secure Digital Host Controller Interface driver
+[    0.530583] sdhci: Copyright(c) Pierre Ossman
+[    0.530615] sdhci-pltfm: SDHCI platform and OF driver helper
+[    0.531597] clocksource: arch_mmio_counter: mask: 0xffffffffffffff max_cycles: 0x46d987e47, max_idle_ns: 440795202767 ns
+[    0.531673] arch-timer-mmio b020000.timer: mmio timer running at 19.20MHz (virt)
+[    0.532327] usbcore: registered new interface driver usbhid
+[    0.532377] usbhid: USB HID core driver
+[    0.536958] ak8975 0-000c: mounting matrix not found: using identity...
+[    0.537042] ak8975 0-000c: supply vdd not found, using dummy regulator
+[    0.537278] ak8975 0-000c: supply vid not found, using dummy regulator
+[    0.542557] bmp280 0-0076: supply vddd not found, using dummy regulator
+[    0.542777] bmp280 0-0076: supply vdda not found, using dummy regulator
+[    0.546405] bmp280 0-0076: 0x58 is a known chip id for bmp280
+[    0.570699] hw perfevents: enabled with armv7_cortex_a7 PMU driver, 5 (8000000f) counters available
+[    0.573851] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: DT property missing, MBHC btn detection disabled
+[    0.573945] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: supply vdd-cdc-io not found, using dummy regulator
+[    0.574165] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: supply vdd-cdc-tx-rx-cx not found, using dummy regulator
+[    0.578311] msm8916-wcd-digital-codec 771c000.audio-codec: using zero-initialized flat cache, this may cause unexpected behavior
+[    0.578846] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: supply vdd-micbias not found, using dummy regulator
+[    0.579407] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: PMIC REV: 1	 CODEC Version: 1
+[    0.579912] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget PDM_RX1 overwritten
+[    0.580065] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: source widget PDM_RX1 overwritten
+[    0.580151] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: source widget PDM_RX1 overwritten
+[    0.580211] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget PDM_RX1 overwritten
+[    0.580271] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget PDM_RX1 overwritten
+[    0.580333] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget ADC1 overwritten
+[    0.580397] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget ADC1 overwritten
+[    0.580459] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: sink widget PDM_RX1 overwritten
+[    0.580670] qcom,pm8916-wcd-spmi-codec 200f000.spmi:pmic@1:audio-codec@f000: ASoC: source widget PDM_RX3 overwritten
+[    0.580783] debugfs: '7708000.audio-controller' already exists in 'cmcc-w1a'
+[    0.584649] input: cmcc-w1a Headset Jack as /devices/platform/soc@0/7702000.sound/sound/card0/input2
+[    0.586384] NET: Registered PF_PACKET protocol family
+[    0.586540] Key type dns_resolver registered
+[    0.587011] Registering SWP/SWPB emulation handler
+[    0.606059] Loading compiled-in X.509 certificates
+[    0.627693]  smd:rpm: mbox_request_channel: can't parse "mboxes" property
+[    0.631019] qcom_smp2p smp2p-hexagon: mbox_request_channel: can't parse "mboxes" property
+[    0.633904] qcom_smp2p smp2p-wcnss: mbox_request_channel: can't parse "mboxes" property
+[    0.635957] qcom-smsm smsm: mbox_request_channel: can't parse "mboxes" property
+[    0.636035] qcom-smsm smsm: mbox_request_channel: can't parse "mboxes" property
+[    0.636089] qcom-smsm smsm: mbox_request_channel: can't parse "mboxes" property
+[    0.636138] qcom-smsm smsm: mbox_request_channel: can't parse "mboxes" property
+[    0.636189] qcom-smsm smsm: mbox_request_channel: can't parse "mboxes" property
+[    0.652202] s2: Bringing 0uV into 1850000-1850000uV
+[    0.652864] l1: Bringing 0uV into 1000000-1000000uV
+[    0.653304] l2: Bringing 0uV into 1200000-1200000uV
+[    0.653947] l4: Bringing 0uV into 1800000-1800000uV
+[    0.654367] l5: Bringing 0uV into 1800000-1800000uV
+[    0.654929] l6: Bringing 0uV into 1800000-1800000uV
+[    0.655616] l7: Bringing 0uV into 1800000-1800000uV
+[    0.656037] l8: Bringing 0uV into 2900000-2900000uV
+[    0.656398] l9: Bringing 0uV into 3300000-3300000uV
+[    0.656781] l10: Bringing 0uV into 1225000-1225000uV
+[    0.657137] l11: Bringing 0uV into 1800000-1800000uV
+[    0.657499] l12: Bringing 0uV into 1800000-1800000uV
+[    0.657930] l13: Bringing 0uV into 3075000-3075000uV
+[    0.658301] l14: Bringing 0uV into 1800000-1800000uV
+[    0.658658] l15: Bringing 0uV into 1800000-1800000uV
+[    0.659129] l17: Bringing 0uV into 2850000-2850000uV
+[    0.659688] l18: Bringing 0uV into 2700000-2700000uV
+[    0.886166] ft3267 3-0038: FT3267 ready, chip id 33:67
+[    0.886230] ft3267 3-0038: unexpected chip id 33:67 (expected 64:26)
+[    0.886536] input: ft3267-touchscreen as /devices/platform/soc@0/78b9000.i2c/i2c-3/3-0038/input/input3
+[    0.888225] ft3267 3-0038: FT3267 touchscreen registered (irq 55)
+[    0.888497] cw2015 2-0062: No battery-profile found, using current flash contents
+[    0.890237] cw2015 2-0062: No profile specified, continuing without profile
+[    0.904240] remoteproc remoteproc0: 4080000.remoteproc is available
+[    0.909760] remoteproc remoteproc1: a204000.remoteproc is available
+[    0.909955] remoteproc remoteproc1: Direct firmware load for wcnss.mdt failed with error -2
+[    0.910002] remoteproc remoteproc1: powering up a204000.remoteproc
+[    0.910070] remoteproc remoteproc1: Direct firmware load for wcnss.mdt failed with error -2
+[    0.910110] remoteproc remoteproc1: request_firmware failed: -2
+[    0.937588] mmc0: SDHCI controller on 7824900.sdhci [7824900.sdhci] using ADMA
+[    0.993653] mmc0: new HS200 MMC card at address 0001
+[    0.994536] mmcblk0: mmc0:0001 EE4EN4 3.56 GiB
+[    0.998977]  mmcblk0: p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 p16 p17 p18 p19 p20 p21 p22 p23 p24 p25 p26 p27 p28 p29 p30 p31 p32 p33
+[    1.005376] mmcblk0boot0: mmc0:0001 EE4EN4 2.00 MiB
+[    1.008750] mmcblk0boot1: mmc0:0001 EE4EN4 2.00 MiB
+[    1.012174] mmcblk0rpmb: mmc0:0001 EE4EN4 512 KiB, chardev (238:0)
+[    1.089407] st_lsm6dsx_spi spi0.0: mounting matrix not found: using identity...
+[    1.093511] /soc@0/dsi@1ac8000: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000/panel@0
+[    1.093730] /soc@0/dsi@1ac8000/panel@0: Fixed dependency cycle(s) with /soc@0/dsi@1ac8000
+[    1.094585] mdp3 1a00000.display-controller: bound 1ac8000.dsi (ops dsi_ops)
+[    1.095904] adreno 1c00000.gpu: supply vdd not found, using dummy regulator
+[    1.096114] adreno 1c00000.gpu: supply vddcx not found, using dummy regulator
+[    1.096188] adreno 1c00000.gpu: [drm:msm_devfreq_init] *ERROR* Couldn't initialize GPU devfreq
+[    1.096470] MDP3DBG iommu_map #1: iova=fffff000 pa=0x83850000 size=1000
+[    1.096601] MDP3DBG iommu_map #1: done ret=0 mapped=1000
+[    1.096639] MDP3DBG iommu_map #2: iova=1000000 pa=0x83850000 size=1000
+[    1.096682] MDP3DBG iommu_map #2: done ret=0 mapped=1000
+[    1.096837] MDP3DBG iommu_map #3: iova=ffff0000 pa=0x83345000 size=8000
+[    1.096877] MDP3DBG iommu_map #3: done ret=0 mapped=8000
+[    1.097460] mdp3 1a00000.display-controller: bound 1c00000.gpu (ops a3xx_ops)
+[    1.100601] mdp3 1a00000.display-controller: [drm:mdp3_kms_dump] lk2nd state: INTR en=00000000 st=00004000 | DMA_P cfg=000821bf size=01900190 ibuf=83200000 stride=000004b0 xy=00000000 | AUTOREFRESH=00000000
+[    1.100705] MDP3DBG lk2nd dsi A: ctrl=00000115 st0=00000000 fifo=11111000 dma_ctrl=14000000 cfg0=00000008 cfg1=00013c2c
+[    1.100747] MDP3DBG lk2nd dsi B: base=8f68f700 len=00000004 wm50=00000000 str0ctl=04b10039 str0tot=01900190 str1ctl=04b10039 str1tot=01900190
+[    1.100792] MDP3DBG lk2nd dsi C: ackerr=00000000 trig=00000004 lanest=00001f1f lanectl=00000000 swap=00000000 phyerr=00089888
+[    1.100832] MDP3DBG lk2nd dsi D: lptim=ffffffff hstim=0000ffff tmo=00000001 clkout=00000710 eot=00000001
+[    1.100869] MDP3DBG lk2nd dsi E: errmask=03f03be0 intctl=00000500 reset=00000000 clkctl=0000023f clkst=0000234f phyrst=00000000
+[    1.100908] MDP3DBG lk2nd dsi F: preext=00000000 mdpctl2=00010006 str2ctl=00000000 ver=03000104
+[    1.100943] MDP3DBG lk2nd mdp3 qos: remapper=000001a9 wm0=00000000 wm1=00000000 wm2=00000000 panic=00000001 lut0=000000ff
+[    1.101233] ------------[ cut here ]------------
+[    1.101267] WARNING: kernel/iomem.c:105 at memremap+0x198/0x1e0, CPU#3: kworker/u16:4/66
+[    1.101318] memremap attempted on ram 0x9fab2000 size: 0x1000
+[    1.101343] Modules linked in:
+[    1.101375] CPU: 3 UID: 0 PID: 66 Comm: kworker/u16:4 Not tainted 7.0.0-g4c8ae5a0d030 #4 PREEMPT 
+[    1.101388] Hardware name: Generic DT based system
+[    1.101396] Workqueue: events_unbound deferred_probe_work_func
+[    1.101414] Call trace: 
+[    1.101424]  unwind_backtrace from show_stack+0x10/0x14
+[    1.101448]  show_stack from dump_stack_lvl+0x54/0x68
+[    1.101472]  dump_stack_lvl from __warn+0x90/0x17c
+[    1.101496]  __warn from warn_slowpath_fmt+0x130/0x1bc
+[    1.101518]  warn_slowpath_fmt from memremap+0x198/0x1e0
+[    1.101542]  memremap from mdp3_kms_init+0x3f0/0x5d8
+[    1.101566]  mdp3_kms_init from msm_drm_kms_init+0x5c/0x2d4
+[    1.101591]  msm_drm_kms_init from msm_drm_init+0x12c/0x1f4
+[    1.101614]  msm_drm_init from try_to_bring_up_aggregate_device+0x20c/0x314
+[    1.101637]  try_to_bring_up_aggregate_device from __component_add+0xac/0x17c
+[    1.101659]  __component_add from dsi_host_attach+0x50/0x88
+[    1.101681]  dsi_host_attach from mipi_dsi_attach+0x2c/0x44
+[    1.101703]  mipi_dsi_attach from rm67162_panel_probe+0x188/0x1bc
+[    1.101722]  rm67162_panel_probe from really_probe+0xe0/0x41c
+[    1.101743]  really_probe from __driver_probe_device+0x9c/0x1f4
+[    1.101763]  __driver_probe_device from driver_probe_device+0x30/0xc0
+[    1.101783]  driver_probe_device from __device_attach_driver+0xa8/0x140
+[    1.101803]  __device_attach_driver from bus_for_each_drv+0x90/0xe4
+[    1.101823]  bus_for_each_drv from __device_attach+0xa8/0x1e4
+[    1.101841]  __device_attach from device_initial_probe+0x3c/0x48
+[    1.101861]  device_initial_probe from bus_probe_device+0x28/0x7c
+[    1.101881]  bus_probe_device from device_add+0x600/0x834
+[    1.101898]  device_add from mipi_dsi_device_register_full+0xcc/0x14c
+[    1.101917]  mipi_dsi_device_register_full from mipi_dsi_host_register+0xc8/0x170
+[    1.101938]  mipi_dsi_host_register from msm_dsi_host_register+0x34/0x48
+[    1.101960]  msm_dsi_host_register from msm_dsi_manager_register+0x140/0x1bc
+[    1.101985]  msm_dsi_manager_register from dsi_dev_probe+0x194/0x214
+[    1.102008]  dsi_dev_probe from platform_probe+0x5c/0x90
+[    1.102031]  platform_probe from really_probe+0xe0/0x41c
+[    1.102053]  really_probe from __driver_probe_device+0x9c/0x1f4
+[    1.102072]  __driver_probe_device from driver_probe_device+0x30/0xc0
+[    1.102093]  driver_probe_device from __device_attach_driver+0xa8/0x140
+[    1.102113]  __device_attach_driver from bus_for_each_drv+0x90/0xe4
+[    1.102132]  bus_for_each_drv from __device_attach+0xa8/0x1e4
+[    1.102150]  __device_attach from device_initial_probe+0x3c/0x48
+[    1.102170]  device_initial_probe from bus_probe_device+0x28/0x7c
+[    1.102189]  bus_probe_device from deferred_probe_work_func+0x8c/0xe4
+[    1.102208]  deferred_probe_work_func from process_one_work+0x178/0x4b0
+[    1.102227]  process_one_work from worker_thread+0x174/0x320
+[    1.102244]  worker_thread from kthread+0x130/0x160
+[    1.102259]  kthread from ret_from_fork+0x14/0x28
+[    1.102273] Exception stack(0xe1115fb0 to 0xe1115ff8)
+[    1.102282] 5fa0:                                     00000000 00000000 00000000 00000000
+[    1.102292] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[    1.102301] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[    1.102308] ---[ end trace 0000000000000000 ]---
+[    1.103156] MDP3DBG mb: ramoops 0x9fa80000, mailbox at +200K
+[    1.103203] MDP3DBG watchdog started (hb 500ms on boot cpu, stall panic after 4s on cpu3)
+[    1.103242] MDP3DBG m2v pre-fix: CGC_EN=0003fbff VBIF_FORCE_EN=00000000
+[    1.103270] MDP3DBG m2v post-fix: CGC_EN=0003fbff VBIF_FORCE_EN=00000003
+[    1.103305] MDP3DBG m3g te: sync_cfg=fff802dd vsync_sel=00000024 init=00000190 rdptr=00000191 thresh=00040004 startpos=00000190 tc_en=00000001
+[    1.103350] MDP3DBG m4a: autorefresh=00000000 id_map=00000000 trig_en=00000000 (routing programmed, takeover at 2nd commit)
+[    1.103388] mdp3 1a00000.display-controller: [drm:mdp3_hw_init] MDP3 HW_VERSION 0x03050306
+[    1.103433] MDP3DBG hw_init done (autorefresh LEFT ARMED)
+[    1.104998] [drm] Initialized msm 1.13.0 for 1a00000.display-controller on minor 0
+[    1.105081] MDP3DBG post_init: drm_client_setup
+[    1.105277] mdp3 1a00000.display-controller: Direct firmware load for qcom/a300_pm4.fw failed with error -2
+[    1.105322] mdp3 1a00000.display-controller: [drm:adreno_request_fw] *ERROR* failed to load a300_pm4.fw
+[    1.105368] MDP3DBG msm_open: gpu load done
+[    1.105397] MDP3DBG msm_open: context_init done, returning
+[    1.105629] MDP3DBG fbdev_probe: 400x400@32 entry, stolen fb alloc next
+[    1.105724] MDP3DBG fbdev_probe: stolen fb ok (id 38), pin iova next
+[    1.106834] MDP3DBG fbdev_probe: pin iova done paddr=2000 ret=0
+[    1.106939] MDP3DBG fbdev_probe: get_vaddr done (e2501000)
+[    1.107721] mdp3 1a00000.display-controller: [drm:mdp3_crtc_atomic_enable] MDP3DBG crtc atomic_enable
+[    1.107763] msm_dsi 1ac8000.dsi: MDP3DBG dsi pre_enable
+[    1.107772] msm_dsi 1ac8000.dsi: MDP3DBG dsi phy_enable SKIPPED (inherit mode)
+[    1.107779] MDP3DBG dsi_host_power_on
+[    1.108059] MDP3DBG dsi power_on INHERIT: skipping set_rate/timing/sw_reset/ctrl_enable, ctrl=00000115 status0=00000000
+[    1.108094] msm_dsi_phy 1ac8300.phy: MDP3DBG pll inherit: VCO already locked, skipping reprogram
+[    1.108113] msm_dsi 1ac8000.dsi: MDP3DBG dsi host powered on
+[    1.108129] msm_dsi 1ac8000.dsi: MDP3DBG dsi pre_enable done
+[    1.108139] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel prepare
+[    1.194842] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel prepared
+[    1.194862] mdp3 1a00000.display-controller: [drm:mdp3_dsi_encoder_enable] MDP3DBG encoder enable
+[    1.194888] msm_dsi 1ac8000.dsi: MDP3DBG dsi enable
+[    1.194894] MDP3DBG dsi_host_enable (op_mode_config)
+[    1.194900] MDP3DBG dsi_host_enable done
+[    1.194907] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel enable: sending init seq
+[    1.194943] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.195084] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.195309] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.195535] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.195757] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.195980] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.196200] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.196415] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel enable: init seq done, tear on
+[    1.196433] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.196559] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.354926] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.355150] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel enabled
+[    1.355170] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[    1.355398] mdp3 1a00000.display-controller: [drm:mdp3_crtc_kick] MDP3DBG kick: first (start=00000000 trig=00000000 trigctrl=00000004)
+[    1.384339] fb0: sys_imageblit: framebuffer is not in virtual address space.
+[    1.384460] MDP3DBG m4b: autorefresh takeover at 2nd commit: interval=1 reg 00000000 -> 10000001
+[    1.406571] Console: switching to colour frame buffer device 50x25
+[    1.457155] fb0: sys_fillrect: framebuffer is not in virtual address space.
+[    1.529924] mdp3 1a00000.display-controller: [drm] fb0: msmdrmfb frame buffer device
+[    1.532384] MDP3DBG post_init: drm_client_setup done
+[    1.539563] input: gpio-keys as /devices/platform/gpio-keys/input/input4
+[    1.543179] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[    1.549213] Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[    1.553347] Loaded X.509 cert 'wens: 61c038651aabdcf94bd0ac7ff06c7248db18c600'
+[    1.555865] faux_driver regulatory: Direct firmware load for regulatory.db failed with error -2
+[    1.558233] cfg80211: failed to load regulatory.db
+[    1.599149] clk: Disabling unused clocks
+[    1.600659] PM: genpd: Disabling unused power domains
+[    1.605038] ALSA device list:
+[    1.606214]   #0: cmcc-w1a
+[    1.675852] EXT4-fs (mmcblk0p33): recovery complete
+[    1.679007] EXT4-fs (mmcblk0p33): mounted filesystem 033b7cf4-65d4-4613-b960-c923acda0447 r/w with ordered data mode. Quota mode: disabled.
+[    1.682417] VFS: Mounted root (ext4 filesystem) on device 259:1.
+[    1.685822] devtmpfs: mounted
+[    1.687122] VFS: Pivoted into new rootfs
+[    1.689723] Freeing unused kernel image (initmem) memory: 1024K
+[    1.692327] Run /sbin/init as init process
+[    1.693539]   with arguments:
+[    1.693553]     /sbin/init
+[    1.693564]     lk2nd
+[    1.693572]   with environment:
+[    1.693581]     HOME=/
+[    1.693590]     TERM=linux
+[    1.693599]     buildvariant=user
+[    1.693608]     selinux=0
+[    1.763862] EXT4-fs (mmcblk0p22): warning: maximal mount count reached, running e2fsck is recommended
+[    1.767694] EXT4-fs (mmcblk0p22): recovery complete
+[    1.769824] EXT4-fs (mmcblk0p22): mounted filesystem 57f8f4bc-abf4-655f-bf67-946fc0f9f25b r/w with ordered data mode. Quota mode: disabled.
+[    1.808650] configfs-gadget.g1 gadget.0: HOST MAC 02:11:22:33:44:56
+[    1.810781] configfs-gadget.g1 gadget.0: MAC 02:11:22:33:44:55
+[    1.813265] l13: voltage operation not allowed
+[    1.854547] process '/usr/bin/sndmix' started with executable stack
+[    6.404855] random: crng init done
+[    6.506029] remoteproc remoteproc1: releasing a204000.remoteproc
+[    7.514047] remoteproc remoteproc1: a204000.remoteproc is available
+[    7.518295] remoteproc remoteproc1: powering up a204000.remoteproc
+[    7.520275] remoteproc remoteproc1: Booting fw image wcnss.mdt, size 924
+[    8.128593]  remoteproc1:smd-edge: mbox_request_channel: can't parse "mboxes" property
+[    8.136090] remoteproc remoteproc1: remote processor a204000.remoteproc is now up
+[    8.235362] qcom_wcnss_ctrl remoteproc1:smd-edge.WCNSS_CTRL.-1.-1: WCNSS Version 1.5 1.2
+[    9.775077] wcn36xx: mac address: 02:00:22:de:c7:13
+[   11.995130] gcc-msm8909 1800000.clock-controller: sync_state() pending due to 22000.rng
+[   11.997365] gcc-msm8909 1800000.clock-controller: sync_state() pending due to 78b7000.i2c
+[   12.989714] wcn36xx: firmware WLAN version 'WCN v2.0 RadioPhy vRhea_GF_1.12 with 19.2MHz XO' and CRM version '00080'
+[   12.993130] wcn36xx: firmware API 1.5.1.2, 12 stations, 2 bssids
+[ 1496.091531] fb0: Framebuffer is not in virtual address space.
+[ 5361.337412] l13: voltage operation not allowed
+[19793.300132] Console: switching to colour dummy device 80x30
+[21517.516225] NOTICE: Automounting of tracing to debugfs is deprecated and will be removed in 2030
+[24018.383577] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24024.922028] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24038.463698] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24040.878099] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24042.774434] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24051.717109] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24057.296720] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24060.825657] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24078.019633] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24078.031643] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24078.031889] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24078.155428] dsi_link_clk_set_rate_6g: Failed to set rate pixel clk, -22
+[24078.185593] ------------[ cut here ]------------
+[24078.185640] WARNING: drivers/regulator/core.c:3244 at _regulator_disable+0x140/0x1a0, CPU#2: sh/1529
+[24078.185749] unbalanced disables for l6
+[24078.185771] Modules linked in:
+[24078.185827] CPU: 2 UID: 0 PID: 1529 Comm: sh Tainted: G        W           7.0.0-g4c8ae5a0d030 #4 PREEMPT 
+[24078.185904] Tainted: [W]=WARN
+[24078.185922] Hardware name: Generic DT based system
+[24078.185947] Call trace: 
+[24078.185977]  unwind_backtrace from show_stack+0x10/0x14
+[24078.186118]  show_stack from dump_stack_lvl+0x54/0x68
+[24078.186233]  dump_stack_lvl from __warn+0x90/0x17c
+[24078.186379]  __warn from warn_slowpath_fmt+0x130/0x1bc
+[24078.186497]  warn_slowpath_fmt from _regulator_disable+0x140/0x1a0
+[24078.186599]  _regulator_disable from regulator_bulk_disable+0x5c/0x100
+[24078.186680]  regulator_bulk_disable from msm_dsi_phy_disable+0x30/0x44
+[24078.186793]  msm_dsi_phy_disable from drm_atomic_bridge_chain_post_disable+0xc8/0xdc
+[24078.186905]  drm_atomic_bridge_chain_post_disable from drm_atomic_helper_commit_encoder_bridge_post_disable+0xec/0x130
+[24078.187008]  drm_atomic_helper_commit_encoder_bridge_post_disable from drm_atomic_helper_commit_modeset_disables+0x1c/0x4c
+[24078.187116]  drm_atomic_helper_commit_modeset_disables from msm_atomic_commit_tail+0x1ac/0xa54
+[24078.187232]  msm_atomic_commit_tail from commit_tail+0x9c/0x184
+[24078.187340]  commit_tail from drm_atomic_helper_commit+0x138/0x15c
+[24078.187438]  drm_atomic_helper_commit from drm_atomic_commit+0xc4/0xf8
+[24078.187554]  drm_atomic_commit from drm_client_modeset_commit_atomic+0x208/0x24c
+[24078.187671]  drm_client_modeset_commit_atomic from drm_client_modeset_dpms+0x84/0x240
+[24078.187771]  drm_client_modeset_dpms from drm_fb_helper_blank+0xd8/0xf0
+[24078.187871]  drm_fb_helper_blank from fb_blank+0x3c/0x50
+[24078.187986]  fb_blank from store_blank+0x4c/0x90
+[24078.188091]  store_blank from kernfs_fop_write_iter+0x10c/0x1f8
+[24078.188177]  kernfs_fop_write_iter from vfs_write+0x274/0x478
+[24078.188257]  vfs_write from ksys_write+0x6c/0xe0
+[24078.188329]  ksys_write from ret_fast_syscall+0x0/0x54
+[24078.188401] Exception stack(0xe083dfa8 to 0xe083dff0)
+[24078.188455] dfa0:                   00000000 00000000 00000001 b6e7c140 00000002 00000000
+[24078.188510] dfc0: 00000000 00000000 c3f52d38 00000004 00000002 00000000 004efb04 00000020
+[24078.188555] dfe0: bed0a610 bed0a600 b6ee7f43 b6ee7886
+[24078.188585] ---[ end trace 0000000000000000 ]---
+[24078.188624] Failed to disable vddio: -EIO
+[24078.188666] msm_dsi_phy 1ac8300.phy: Runtime PM usage count underflow!
+[24122.178993] mdp3 1a00000.display-controller: [drm:mdp3_crtc_atomic_enable] MDP3DBG crtc atomic_enable
+[24122.179069] msm_dsi 1ac8000.dsi: MDP3DBG dsi pre_enable
+[24122.179085] msm_dsi 1ac8000.dsi: MDP3DBG dsi phy_enable SKIPPED (inherit mode)
+[24122.179097] MDP3DBG dsi_host_power_on
+[24122.179571] MDP3DBG dsi power_on INHERIT: skipping set_rate/timing/sw_reset/ctrl_enable, ctrl=00000000 status0=00000000
+[24122.179651] msm_dsi_phy 1ac8300.phy: MDP3DBG pll inherit: VCO already locked, skipping reprogram
+[24122.180113] ------------[ cut here ]------------
+[24122.180122] WARNING: drivers/clk/qcom/clk-branch.c:87 at clk_branch_toggle+0x180/0x18c, CPU#3: sh/1529
+[24122.180163] gcc_mdss_byte0_clk status stuck at 'off'
+[24122.180171] Modules linked in:
+[24122.180204] CPU: 3 UID: 0 PID: 1529 Comm: sh Tainted: G        W           7.0.0-g4c8ae5a0d030 #4 PREEMPT 
+[24122.180238] Tainted: [W]=WARN
+[24122.180246] Hardware name: Generic DT based system
+[24122.180256] Call trace: 
+[24122.180270]  unwind_backtrace from show_stack+0x10/0x14
+[24122.180317]  show_stack from dump_stack_lvl+0x54/0x68
+[24122.180361]  dump_stack_lvl from __warn+0x90/0x17c
+[24122.180409]  __warn from warn_slowpath_fmt+0x130/0x1bc
+[24122.180454]  warn_slowpath_fmt from clk_branch_toggle+0x180/0x18c
+[24122.180492]  clk_branch_toggle from clk_core_enable+0x7c/0x24c
+[24122.180529]  clk_core_enable from clk_enable+0x20/0x34
+[24122.180567]  clk_enable from dsi_link_clk_enable_6g+0x88/0x15c
+[24122.180612]  dsi_link_clk_enable_6g from msm_dsi_host_power_on+0x154/0xa4c
+[24122.180661]  msm_dsi_host_power_on from dsi_mgr_bridge_pre_enable+0x2c8/0x3c4
+[24122.180710]  dsi_mgr_bridge_pre_enable from drm_atomic_bridge_chain_pre_enable+0xb4/0x118
+[24122.180754]  drm_atomic_bridge_chain_pre_enable from drm_atomic_helper_commit_encoder_bridge_pre_enable+0xbc/0xe0
+[24122.180795]  drm_atomic_helper_commit_encoder_bridge_pre_enable from drm_atomic_helper_commit_modeset_enables+0x1c/0x38
+[24122.180838]  drm_atomic_helper_commit_modeset_enables from msm_atomic_commit_tail+0x1c8/0xa54
+[24122.180883]  msm_atomic_commit_tail from commit_tail+0x9c/0x184
+[24122.180924]  commit_tail from drm_atomic_helper_commit+0x138/0x15c
+[24122.180961]  drm_atomic_helper_commit from drm_atomic_commit+0xc4/0xf8
+[24122.181008]  drm_atomic_commit from drm_client_modeset_commit_atomic+0x208/0x24c
+[24122.181055]  drm_client_modeset_commit_atomic from drm_client_modeset_dpms+0x84/0x240
+[24122.181093]  drm_client_modeset_dpms from drm_fb_helper_blank+0x80/0xf0
+[24122.181133]  drm_fb_helper_blank from fb_blank+0x3c/0x50
+[24122.181177]  fb_blank from store_blank+0x4c/0x90
+[24122.181218]  store_blank from kernfs_fop_write_iter+0x10c/0x1f8
+[24122.181253]  kernfs_fop_write_iter from vfs_write+0x274/0x478
+[24122.181284]  vfs_write from ksys_write+0x6c/0xe0
+[24122.181312]  ksys_write from ret_fast_syscall+0x0/0x54
+[24122.181340] Exception stack(0xe083dfa8 to 0xe083dff0)
+[24122.181362] dfa0:                   00000000 00000000 00000001 b6e7c1d0 00000002 00000000
+[24122.181384] dfc0: 00000000 00000000 c3f52d38 00000004 00000002 00000000 004efb04 00000020
+[24122.181401] dfe0: bed0a610 bed0a600 b6ee7f43 b6ee7886
+[24122.181412] ---[ end trace 0000000000000000 ]---
+[24122.181435] dsi_link_clk_enable_6g: Failed to enable dsi byte clk
+[24122.181483] msm_dsi_host_power_on: inherit: link clk enable failed -16
+[24122.181509] dsi_mgr_bridge_power_on: power on host 0 failed, -16
+[24122.181528] ------------[ cut here ]------------
+[24122.181535] WARNING: drivers/regulator/core.c:3244 at _regulator_disable+0x140/0x1a0, CPU#3: sh/1529
+[24122.181580] unbalanced disables for l6
+[24122.181588] Modules linked in:
+[24122.181607] CPU: 3 UID: 0 PID: 1529 Comm: sh Tainted: G        W           7.0.0-g4c8ae5a0d030 #4 PREEMPT 
+[24122.181634] Tainted: [W]=WARN
+[24122.181641] Hardware name: Generic DT based system
+[24122.181650] Call trace: 
+[24122.181659]  unwind_backtrace from show_stack+0x10/0x14
+[24122.181699]  show_stack from dump_stack_lvl+0x54/0x68
+[24122.181740]  dump_stack_lvl from __warn+0x90/0x17c
+[24122.181787]  __warn from warn_slowpath_fmt+0x130/0x1bc
+[24122.181846]  warn_slowpath_fmt from _regulator_disable+0x140/0x1a0
+[24122.181868]  _regulator_disable from regulator_bulk_disable+0x5c/0x100
+[24122.181883]  regulator_bulk_disable from msm_dsi_phy_disable+0x30/0x44
+[24122.181909]  msm_dsi_phy_disable from dsi_mgr_bridge_pre_enable+0x354/0x3c4
+[24122.181934]  dsi_mgr_bridge_pre_enable from drm_atomic_bridge_chain_pre_enable+0xb4/0x118
+[24122.181956]  drm_atomic_bridge_chain_pre_enable from drm_atomic_helper_commit_encoder_bridge_pre_enable+0xbc/0xe0
+[24122.181975]  drm_atomic_helper_commit_encoder_bridge_pre_enable from drm_atomic_helper_commit_modeset_enables+0x1c/0x38
+[24122.181996]  drm_atomic_helper_commit_modeset_enables from msm_atomic_commit_tail+0x1c8/0xa54
+[24122.182017]  msm_atomic_commit_tail from commit_tail+0x9c/0x184
+[24122.182037]  commit_tail from drm_atomic_helper_commit+0x138/0x15c
+[24122.182055]  drm_atomic_helper_commit from drm_atomic_commit+0xc4/0xf8
+[24122.182077]  drm_atomic_commit from drm_client_modeset_commit_atomic+0x208/0x24c
+[24122.182099]  drm_client_modeset_commit_atomic from drm_client_modeset_dpms+0x84/0x240
+[24122.182118]  drm_client_modeset_dpms from drm_fb_helper_blank+0x80/0xf0
+[24122.182137]  drm_fb_helper_blank from fb_blank+0x3c/0x50
+[24122.182158]  fb_blank from store_blank+0x4c/0x90
+[24122.182177]  store_blank from kernfs_fop_write_iter+0x10c/0x1f8
+[24122.182194]  kernfs_fop_write_iter from vfs_write+0x274/0x478
+[24122.182208]  vfs_write from ksys_write+0x6c/0xe0
+[24122.182222]  ksys_write from ret_fast_syscall+0x0/0x54
+[24122.182236] Exception stack(0xe083dfa8 to 0xe083dff0)
+[24122.182247] dfa0:                   00000000 00000000 00000001 b6e7c1d0 00000002 00000000
+[24122.182258] dfc0: 00000000 00000000 c3f52d38 00000004 00000002 00000000 004efb04 00000020
+[24122.182266] dfe0: bed0a610 bed0a600 b6ee7f43 b6ee7886
+[24122.182273] ---[ end trace 0000000000000000 ]---
+[24122.182280] Failed to disable vddio: -EIO
+[24122.182305] msm_dsi 1ac8000.dsi: Power on failed: -16
+[24122.182319] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel prepare
+[24122.265029] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel prepared
+[24122.265051] mdp3 1a00000.display-controller: [drm:mdp3_dsi_encoder_enable] MDP3DBG encoder enable
+[24122.265078] msm_dsi 1ac8000.dsi: MDP3DBG dsi enable
+[24122.265084] MDP3DBG dsi_host_enable (op_mode_config)
+[24122.265090] MDP3DBG dsi_host_enable done
+[24122.265097] panel-raydium-rm67162 1ac8000.dsi.0: MDP3DBG panel enable: sending init seq
+[24122.265106] panel-raydium-rm67162 1ac8000.dsi.0: Failed to send vendor commands (-22)
+[24122.323546] mdp3 1a00000.display-controller: MDP3DBG vblank timeout
+[24122.323565] mdp3 1a00000.display-controller: MDP3DBG vblank TO dump: start=00000000 intr_en=00004100 intr_st=02000000 autorefresh=10000001
+[24122.323580] mdp3 1a00000.display-controller: MDP3DBG vblank TO dump2: dsi_ctrl=10030001 dsi_status0=00000005 dsi_fifo=00000000
