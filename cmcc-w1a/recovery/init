@@ -1,0 +1,244 @@
+#!/bin/sh
+# W1A recovery initramfs -- PID 1.
+#
+# Runs entirely from RAM: no switch_root, the persistent rootfs (p33) is
+# only ever mounted read-only unless the operator explicitly asks.
+#
+# Bring-up:
+#   1. proc/sys/devtmpfs/configfs/debugfs/tmpfs
+#   2. USB composite gadget: CDC-NCM + CDC-ACM (macOS/Linux免驱), IAD
+#      descriptors, stable MACs/serial; usb0 = 192.168.2.1/24 + udhcpd
+#   3. root shell on the ACM port (/dev/ttyGS0), telnetd :2323, dropbear :22
+#   4. eMMC wait/retry, p33 mounted read-only at /mnt/root
+#   5. WCNSS firmware staging + remoteproc rebind (WiFi)
+#   6. interactive recovery menu on the serial console
+#
+# The recovery menu can back up/restore every partition over the network
+# or through a USB mass-storage LUN, fsck read-only, and reflash the boot
+# image at p20+512K.
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+LOG=/recovery.log
+
+. /etc/machine.conf
+
+say() {
+	echo "$*" > /dev/kmsg 2>/dev/null
+	echo "$*" >> "$LOG" 2>/dev/null
+	[ -c /dev/ttyGS0 ] && echo "$*" > /dev/ttyGS0 2>/dev/null
+	return 0
+}
+
+fail() {
+	say "RECOVERY FAILED: $1"
+	say "serial console: /dev/ttyGS0 ; telnet :2323 ; ssh root@192.168.2.1"
+	# keep the box alive for diagnosis instead of panicking PID1
+	while :; do sleep 60; done
+}
+
+mkdir -p /proc /sys /dev /run /tmp /mnt /config
+mountpoint -q /proc || mount -t proc proc /proc       || fail "mount /proc"
+mountpoint -q /sys  || mount -t sysfs sysfs /sys      || fail "mount /sys"
+mountpoint -q /dev  || mount -t devtmpfs devtmpfs /dev || fail "mount /dev"
+mkdir -p /dev/pts /dev/shm
+mount -t devpts devpts /dev/pts   2>/dev/null
+mount -t tmpfs tmpfs /dev/shm     2>/dev/null
+mount -t tmpfs tmpfs /run         2>/dev/null
+mount -t tmpfs tmpfs /tmp         2>/dev/null
+mkdir -p /sys/kernel/config /sys/kernel/debug
+mount -t configfs configfs /config 2>/dev/null
+mount -t debugfs debugfs /sys/kernel/debug     2>/dev/null
+
+hostname w1a-recovery 2>/dev/null
+uname -a >> "$LOG"
+say ""
+say "=============================================="
+say " W1A RECOVERY  $(uname -r)"
+say "=============================================="
+say " kernel : $(cat /proc/version)"
+say " cmdline: $(cat /proc/cmdline)"
+
+# ---------------------------------------------------------------- gadget
+# Same composite layout as the normal allegro init (w1a-init.sh): a
+# CDC-NCM + CDC-ACM device with the USB-IF IAD triple, so macOS, Linux
+# and the current build host all enumerate it without extra drivers.
+say "setting up USB NCM+ACM gadget"
+
+# /init runs ~1.8s after the kernel starts, but the UDC driver
+# (ci_hdrc) probes asynchronously later.  Binding the gadget before
+# /sys/class/udc exists silently does nothing and leaves the whole box
+# unreachable, so wait for it (bounded).
+n=0
+while [ -z "$(ls /sys/class/udc 2>/dev/null)" ] && [ $n -lt 40 ]; do
+	n=$((n+1))
+	sleep 1
+done
+say "UDC: [$(ls /sys/class/udc 2>/dev/null | tr '\n' ' ')]"
+
+(
+	G=/config/usb_gadget/g1
+	mkdir -p "$G"
+	cd "$G" || exit 1
+	[ "$(cat UDC 2>/dev/null)" ] && echo "" > UDC 2>/dev/null
+
+	echo 0x18d1 > idVendor
+	echo 0x0a02 > idProduct
+	echo 0x0200 > bcdUSB
+	echo 0x0100 > bcdDevice
+	echo 0xEF > bDeviceClass
+	echo 0x02 > bDeviceSubClass
+	echo 0x01 > bDeviceProtocol
+
+	mkdir -p strings/0x409
+	echo "CMCC" > strings/0x409/manufacturer
+	echo "W1A Recovery" > strings/0x409/product
+	echo "W1A-RECOVERY" > strings/0x409/serialnumber
+
+	mkdir -p configs/c.1/strings/0x409
+	echo "ncm+acm" > configs/c.1/strings/0x409/configuration
+	echo 500 > configs/c.1/MaxPower
+	echo 0x80 > configs/c.1/bmAttributes
+
+	mkdir -p functions/ncm.usb0 functions/acm.gs0
+	# MACs must be written before linking into the configuration
+	echo 02:11:22:33:44:55 > functions/ncm.usb0/dev_addr
+	echo 02:11:22:33:44:56 > functions/ncm.usb0/host_addr
+	[ -L configs/c.1/ncm.usb0 ] || ln -s functions/ncm.usb0 configs/c.1
+	[ -L configs/c.1/acm.gs0 ] || ln -s functions/acm.gs0 configs/c.1
+
+	for u in /sys/class/udc/*; do
+		[ -e "$u" ] || continue
+		echo "${u##*/}" > UDC && break
+	done
+) >> "$LOG" 2>&1
+say "gadget UDC: $(cat /config/usb_gadget/g1/UDC 2>/dev/null || echo FAILED)"
+
+n=0
+while [ ! -e /sys/class/net/usb0 ] && [ $n -lt 20 ]; do n=$((n+1)); sleep 1; done
+if [ -e /sys/class/net/usb0 ]; then
+	ip link set usb0 up
+	ip addr add 192.168.2.1/24 dev usb0 2>/dev/null
+	say "usb0: $(ip -4 addr show usb0 2>/dev/null | grep -o 'inet [0-9./]*')"
+else
+	say "WARN: usb0 never appeared"
+fi
+
+# The DRM fbdev starts blanked (FB_BLANK_POWERDOWN); unblank so the panel
+# shows the console.  With w1a.no_dsi_pa the command-mode frame stream is
+# healthy and this completes; run it in the background so that even a
+# wedged commit can never block init.
+if [ -e /sys/class/graphics/fb0/blank ]; then
+	( echo 0 > /sys/class/graphics/fb0/blank ) &
+	say "fb0 unblank requested"
+fi
+
+# DHCP so the host gets an address with zero manual setup
+cat > /tmp/udhcpd.conf <<'EOF'
+interface usb0
+start 192.168.2.50
+end 192.168.2.150
+option subnet 255.255.255.0
+option lease 43200
+max_leases 16
+autoip yes
+lease_file /tmp/udhcpd.leases
+pidfile /tmp/udhcpd.pid
+EOF
+touch /tmp/udhcpd.leases
+udhcpd /tmp/udhcpd.conf 2>> "$LOG" &
+say "udhcpd on usb0 (rc=$?)"
+
+# ------------------------------------------------------------ consoles
+# The ACM port is the primary interactive channel on macOS/Linux hosts.
+if [ -c /dev/ttyGS0 ]; then
+	(
+		while :; do
+			setsid sh -c 'exec /recovery/menu.sh </dev/ttyGS0 >/dev/ttyGS0 2>&1'
+			sleep 1
+		done
+	) &
+	say "serial console: /dev/ttyGS0 (menu)"
+else
+	say "WARN: /dev/ttyGS0 missing"
+fi
+
+# telnetd (busybox-extras) gives a plain shell; the menu is on serial.
+if command -v telnetd >/dev/null 2>&1; then
+	telnetd -l /bin/sh -p 2323 2>> "$LOG" &
+	say "telnetd :2323 (root shell)"
+fi
+
+# --------------------------------------------------------------- storage
+# Wait for the eMMC and retry the sdhci probe once if the first attach
+# lost the card (same trick as the old initramfs).
+n=0
+while [ ! -e /dev/${sdcard_partition} ] && [ $n -lt 30 ]; do n=$((n+1)); sleep 1; done
+if [ ! -e /dev/${sdcard_partition} ] && [ -e /sys/bus/platform/drivers/sdhci_msm ]; then
+	say "eMMC missing, rebinding sdhci_msm"
+	echo 7824900.sdhci > /sys/bus/platform/drivers/sdhci_msm/unbind 2>/dev/null
+	sleep 2
+	echo 7824900.sdhci > /sys/bus/platform/drivers/sdhci_msm/bind 2>/dev/null
+	n=0
+	while [ ! -e /dev/${sdcard_partition} ] && [ $n -lt 15 ]; do n=$((n+1)); sleep 1; done
+fi
+
+mkdir -p /mnt/root /mnt/firmware /mnt/persist
+if [ -e /dev/${sdcard_partition} ]; then
+	say "e2fsck -n /dev/${sdcard_partition}"
+	e2fsck -n /dev/${sdcard_partition} >> "$LOG" 2>&1
+	say "e2fsck rc=$?"
+	mount -t ext4 -o ro,noatime /dev/${sdcard_partition} /mnt/root 2>> "$LOG" \
+		&& say "p33 mounted read-only at /mnt/root" \
+		|| say "WARN: p33 mount failed"
+fi
+
+# dropbear: host keys generated at first start; root login with the
+# authorised key from the normal rootfs if present.
+mkdir -p /etc/dropbear /root/.ssh
+if [ -f /mnt/root/root/.ssh/authorized_keys ]; then
+	cp /mnt/root/root/.ssh/authorized_keys /root/.ssh/ 2>/dev/null
+fi
+# apk --usermode leaves /root owned by uid 1000; dropbear refuses the
+# key unless the directory chain is root-owned and not group/other
+# writable.
+chown -R root:root /root 2>/dev/null
+chmod 700 /root /root/.ssh 2>/dev/null
+chmod 600 /root/.ssh/authorized_keys 2>/dev/null
+if command -v dropbear >/dev/null 2>&1; then
+	dropbear -R -p 22 -P /run/dropbear.pid 2>> "$LOG" &
+	say "dropbear :22 (root, key-based)"
+fi
+
+# ---------------------------------------------------------------- wifi
+# WCNSS firmware is proprietary and not baked into the image: stage it
+# from p1 (modem) / p22 (persist NV), then rebind the remoteproc.
+if [ -e /dev/${firmware_partition} ]; then
+	mount -t vfat -o ro /dev/${firmware_partition} /mnt/firmware 2>> "$LOG"
+	mkdir -p /lib/firmware/wlan/prima
+	cp /mnt/firmware/image/wcnss.* /lib/firmware/ 2>> "$LOG"
+fi
+if [ -e /dev/${persist_partition} ]; then
+	mount -t ext4 -o ro /dev/${persist_partition} /mnt/persist 2>> "$LOG"
+	cp /mnt/persist/WCNSS_qcom_wlan_nv.bin /lib/firmware/wlan/prima/ 2>> "$LOG"
+	umount /mnt/persist 2>/dev/null
+fi
+if [ -e /sys/bus/platform/drivers/qcom-wcnss-pil/a204000.remoteproc ]; then
+	echo a204000.remoteproc > /sys/bus/platform/drivers/qcom-wcnss-pil/unbind 2>/dev/null
+	sleep 1
+	echo a204000.remoteproc > /sys/bus/platform/drivers/qcom-wcnss-pil/bind 2>/dev/null
+	sleep 3
+	say "wcnss: $(cat /sys/class/remoteproc/remoteproc0/state 2>/dev/null) wlan0=$([ -e /sys/class/net/wlan0 ] && echo yes || echo no)"
+fi
+
+# ---------------------------------------------------------------- menu
+say "storage: $(cat /proc/partitions | awk 'NR>2{printf "p%s=%sM ", $4, int($3/1024)}')"
+say "recovery ready -- menu on /dev/ttyGS0, shell on telnet/ssh"
+[ -c /dev/tty0 ] && printf "\nW1A RECOVERY ready\nserial: /dev/ttyGS0\ntelnet :2323\nssh root@192.168.2.1\n" > /dev/tty0 2>/dev/null
+
+# PID 1 must never exit.
+while :; do
+	sleep 60
+	# reap any orphaned children once in a while
+	wait 2>/dev/null
+done

@@ -1,0 +1,34 @@
+# Alpine packages baked into the W1A recovery initramfs.
+# Keep this list lean: the whole boot.img must fit in p24 (20 MiB) with
+# the ~10.3 MiB zImage, so the compressed initramfs budget is ~9 MiB.
+#
+# Deliberately excluded (size / not needed):
+#   alpine-base (pulls openrc/ifupdown), file (10 MB magic.mgc), zstd
+#   (C++/libstdc++), curl (pulls libunistring/brotli), strace, bash,
+#   screen, openssl CLI, tzdata, pciutils/usbutils (busybox provides
+#   lsusb), python3, gdb.
+alpine-baselayout
+alpine-keys
+musl
+busybox
+busybox-extras
+e2fsprogs
+e2fsprogs-extra
+dosfstools
+mtools
+mmc-utils
+util-linux
+util-linux-misc
+iproute2
+dropbear
+wpa_supplicant
+iw
+rsync
+socat
+picocom
+less
+kmod
+i2c-tools
+procps-ng
+nano
+netcat-openbsd
