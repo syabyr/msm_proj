@@ -1,0 +1,18 @@
+# Alpine packages for the persistent p21 rootfs.
+alpine-baselayout
+alpine-keys
+musl
+busybox
+busybox-extras
+e2fsprogs
+e2fsprogs-extra
+util-linux
+util-linux-misc
+iproute2
+openssh
+openssh-server
+wpa_supplicant
+iw
+kmod
+ca-certificates
+tzdata

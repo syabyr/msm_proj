@@ -1,0 +1,5 @@
+# W1A Alpine busybox init (no openrc in the minirootfs)
+::sysinit:/etc/w1a-init.sh
+::askfirst:/bin/sh
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/sync

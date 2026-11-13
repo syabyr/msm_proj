@@ -1,0 +1,2 @@
+# W1A Alpine fstab (root = /dev/mmcblk0p21, set by the kernel cmdline)
+/dev/mmcblk0p22  /persist  ext4  defaults,nofail  0  0
