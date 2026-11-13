@@ -327,6 +327,28 @@ fi
     fi
 ) &
 
+# --- 4c. time sync: no battery-backed RTC (the clock starts at 1970)
+# and no service manager; sync once the link is up, persist to the RTC,
+# then re-sync every 6h.
+(
+    i=0
+    while [ $i -lt 30 ]; do
+        if timeout 20 ntpd -q -n -p ntp.aliyun.com -p ntp1.aliyun.com \
+                 -p cn.pool.ntp.org 2>>/tmp/time.log; then
+            echo "[time] synced: $(date -u)" >> /tmp/time.log
+            hwclock -w 2>>/tmp/time.log
+            break
+        fi
+        i=$((i+1)); sleep 10
+    done
+    while :; do
+        sleep 21600
+        timeout 20 ntpd -q -n -p ntp.aliyun.com -p ntp1.aliyun.com 2>>/tmp/time.log \
+            && hwclock -w 2>>/tmp/time.log
+        echo "[time] resync: $(date -u)" >> /tmp/time.log
+    done
+) &
+
 echo ""
 echo "W1A Alpine Linux $(cat /etc/alpine-release 2>/dev/null)"
 echo "access: telnet port 2323 / ssh root@192.168.2.1 (usb $USB_MODE)"

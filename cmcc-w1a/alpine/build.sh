@@ -117,6 +117,15 @@ done
 # ------------------------------------------------------------- 4. overlay
 echo "=== overlaying userspace"
 cp -a "$DIR/overlay/." "$ROOTFS/"
+# tzdata is installed but --no-scripts skips the /etc/localtime link
+ln -sf /usr/share/zoneinfo/Asia/Shanghai "$ROOTFS/etc/localtime"
+echo Asia/Shanghai > "$ROOTFS/etc/timezone"
+# apk --no-scripts skips ca-certificates' update-ca-certificates; build
+# the OpenSSL CA bundle so apk can verify the HTTPS mirrors.  (cert.pem
+# is already a symlink to certs/ca-certificates.crt.)
+mkdir -p "$ROOTFS/etc/ssl/certs"
+cat "$ROOTFS"/usr/share/ca-certificates/mozilla/*.crt \
+	> "$ROOTFS/etc/ssl/certs/ca-certificates.crt" 2>/dev/null
 chmod 755 "$ROOTFS/etc/w1a-init.sh"
 chmod 600 "$ROOTFS/root/.ssh/authorized_keys" 2>/dev/null || true
 chown -R root:root "$ROOTFS/root" 2>/dev/null || true
