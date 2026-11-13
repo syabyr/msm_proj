@@ -1,0 +1,73 @@
+#!/bin/sh
+# W1A display + GPU test suite (CMCC W1A, mainline 7.0, B-full phase 1).
+# Run over ssh (root@192.168.2.1) or telnet. All tools are static
+# raw-syscall binaries in /usr/bin - no libc needed.
+#
+# usage: w1atest            full suite (~40s)
+#        w1atest quick      state dump + one 60fps burst (~10s)
+#
+# NOTE: fpspush needs MDP3 INTR_ENABLE bit14|bit25 set (DMA_P_DONE must
+# latch or its poll spins). init14 pokes 1a00020=2004000 at boot; this
+# script re-does it defensively before the fps sweep.
+
+T() { echo "[TEST] $*"; }
+
+# ---------- 0. hardware state dump ----------
+T "MDP3/DSI/GCC register state"
+echo "  INTR_ENABLE(1a00020) = $(mempeek 1a00020)"
+echo "  INTR_STATUS(1a00024) = $(mempeek 1a00024)"
+echo "  AUTOREFRESH(1a0034c) = $(mempeek 1a0034c)"
+echo "  DSI_CTRL(1ac8004)    = $(mempeek 1ac8004)"
+echo "  DSI_SW_TRIG(1ac8090) = $(mempeek 1ac8090)"
+echo "  axi branch(184d080)  = $(mempeek 184d080)"
+echo "  mdp branch(184d088)  = $(mempeek 184d088)"
+echo "  dsi irq: $(grep dsi /proc/interrupts)"
+
+# ---------- 1. GPU sanity ----------
+T "GPU (Adreno 304)"
+gpupoke
+ls -l /dev/dri/ 2>&1 | sed 's/^/  /'
+
+# ---------- 2. fbtest drawing (12fps autorefresh path) ----------
+T "fbtest: solid red 3s (autorefresh path)"
+fbtest solid 255 0 0; sleep 3
+T "fbtest: bars"
+fbtest bars; sleep 2
+T "fbtest: color cycle 8x400ms"
+fbtest cycle 8 400
+
+# ---------- 3. fps sweep (software frame push, B0 fpsdemo path) ----------
+# fpsdemo renders RGB888/stride-1200 scrolling bars (matching the MDP3
+# lk2nd config - XRGB8888/1600 tools show a moire grid!) + kicks DMA per
+# frame. VISIBLE motion = the only real proof of pushing (counters can
+# lie via the 8.3ms poll timeout). fpsdemo arms INTR_ENABLE itself.
+
+if [ "$1" = quick ]; then
+    T "fpsdemo 60fps x 5s (watch the bars scroll)"
+    fpsdemo 60 5
+else
+    for f in 6 12 30 60; do
+        T "fpsdemo ${f}fps x 5s (watch: low=steppy, high=smooth)"
+        fpsdemo $f 5
+    done
+    T "fpsdemo free-run x 5s (hardware ceiling)"
+    fpsdemo 0 5
+fi
+
+# ---------- 3.5 TE-gated push (Phase 1.5) ----------
+# panel TE (gpio24) paces the kicks: watch for perfectly smooth scroll.
+# first run prints the TE period (panel GRAM scan rate) - the number we
+# have never measured before. divide=1 pushes on every TE edge.
+T "tegate TE-gated 10s (smooth? TE period printed above)"
+tegate 10 1
+
+# ---------- 4. restore + final state ----------
+T "restore 12fps autorefresh"
+mempoke 184d080 1
+mempoke 184d088 1
+mempoke 1a0034c 10000005
+mempoke 1a00028 7ffffff
+mempoke 1a00044 1
+mempoke 1ac8090 1
+echo "  AUTOREFRESH now = $(mempeek 1a0034c)"
+T "DONE - panel back on 12fps hw self-refresh"
