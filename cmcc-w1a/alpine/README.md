@@ -67,7 +67,7 @@ The kernel mounts p21, runs `/sbin/init` (busybox) → `/etc/inittab`
 ## Files
 
 ```
-p21/
+alpine/
 ├── build-p21.sh        # build pipeline
 ├── packages.txt        # Alpine package list (armv7)
 ├── overlay/            # copied over the apk rootfs

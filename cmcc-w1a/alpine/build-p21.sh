@@ -194,6 +194,6 @@ echo "Write the rootfs to p21 and grow it to ${P21_KIB} KiB (DESTROYS the stock 
 echo "  cat $OUT/rootfs.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p21 bs=1M'"
 echo "  ssh root@192.168.2.1 'e2fsck -f /dev/mmcblk0p21 && resize2fs /dev/mmcblk0p21'"
 echo "or:"
-echo "  p21/flash-p21.sh"
+echo "  alpine/flash-p21.sh"
 echo "Boot it:"
 echo "  fastboot boot $OUT/kernel.img"
