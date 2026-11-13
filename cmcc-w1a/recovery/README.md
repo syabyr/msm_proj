@@ -41,15 +41,23 @@ fits the 20 MiB `p24 recovery` partition).
 ## Boot
 
 ```bash
-# RAM only (no flash)
+# RAM only, no flash - the primary and verified path
 fastboot boot recovery/out/w1a-recovery.img
-
-# persistent recovery partition (p24), then hold Volume Up while booting
-fastboot flash recovery recovery/out/w1a-recovery.img
 ```
 
-The device is a lk2nd target built with forced fastboot mode, so a normal
-power-on lands in fastboot; Volume Up boots the `recovery` partition.
+This lk2nd build is compiled with **forced fastboot mode** ("Fastboot
+mode was forced with compile-time flag"): every power-on lands in
+fastboot, so the recovery image is always booted with `fastboot boot`
+from the host.
+
+**Volume Up is NOT a recovery key on this device.**  The stock Qualcomm
+PBL/aboot consumes Volume Up + power as the **EDL** (Emergency Download)
+combo (USB `05c6:9008`), and lk2nd never runs.  Exit EDL with a ~15 s
+power-button press (or `edl reset`).
+
+The p24 `recovery` partition can hold an archival copy
+(`fastboot flash recovery ...`), but on this hardware it is **not**
+button-bootable.
 
 ## Access
 
