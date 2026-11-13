@@ -311,6 +311,16 @@ fi
             udhcpc -i wlan0 -n -q -t 5 -T 2 >> /tmp/wifi.log 2>&1 && break
             n=$((n+1)); sleep 1
         done
+        # Some APs (e.g. the N60Pro here) do not send a DHCP router
+        # option, so udhcpc leaves no default route and apk/DNS to the
+        # internet fail.  Fall back to the subnet's .1.
+        if ! ip route 2>/dev/null | grep -q '^default'; then
+            gw=$(ip -4 addr show wlan0 2>/dev/null | awk '/inet /{print $2; exit}' | cut -d/ -f1 | awk -F. '{print $1"."$2"."$3".1"}')
+            if [ -n "$gw" ]; then
+                ip route add default via "$gw" dev wlan0 2>>/tmp/wifi.log
+                echo "[wifi] no DHCP router, default via $gw" >> /tmp/wifi.log
+            fi
+        fi
         echo "[wifi] wlan0: $(ip -4 addr show wlan0 2>/dev/null | grep inet)" >> /tmp/wifi.log
     else
         echo "[wifi] ERROR: wlan0 never appeared after rebind" >> /tmp/wifi.log

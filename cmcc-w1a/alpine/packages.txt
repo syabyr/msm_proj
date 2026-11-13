@@ -1,6 +1,7 @@
 # Alpine packages for the persistent p21 rootfs.
 alpine-baselayout
 alpine-keys
+apk-tools
 musl
 busybox
 busybox-extras
