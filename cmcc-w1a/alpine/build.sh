@@ -25,7 +25,9 @@ set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 BUILD_ROOT="${W1A_BUILD_ROOT:-$DIR/..}"
 AST="$BUILD_ROOT/asteroid"
+[ -d "$AST" ] || AST="$DIR/../../../cmcc-w1a"   # build tree (tools/ now at its root)
 KOUT="${W1A_KOUT:-$BUILD_ROOT/ml-out}"
+[ -f "$KOUT/arch/arm/boot/zImage" ] || KOUT="$DIR/../../../cmcc-w1a/ml-out"
 WORK="${W1A_P21_WORK:-$DIR/build}"
 ROOTFS="$WORK/rootfs"
 OUT="$DIR/out"

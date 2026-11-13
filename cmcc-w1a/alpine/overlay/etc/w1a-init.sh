@@ -255,6 +255,32 @@ fi
 # --- 4b. WiFi (backgrounded: association/DHCP can take 30s+ and
 # must NOT block the rest of sysinit)
 (
+    # A fresh rootfs has neither the WCNSS firmware nor its NV: stage
+    # them from p1 (image/) and p22 (persist) BEFORE the rebind, or
+    # request_firmware(wcnss.mdt) fails and wlan0 never appears.
+    mkdir -p /lib/firmware/wlan/prima
+    if [ ! -e /lib/firmware/wcnss.mdt ]; then
+        mkdir -p /mnt/wcnssfw
+        if mount -t vfat -o ro /dev/mmcblk0p1 /mnt/wcnssfw 2>>/tmp/wifi.log; then
+            cp -f /mnt/wcnssfw/image/wcnss.* /lib/firmware/ 2>>/tmp/wifi.log
+            umount /mnt/wcnssfw 2>>/tmp/wifi.log
+        else
+            echo "[wifi] WARN: p1 mount failed" >> /tmp/wifi.log
+        fi
+    fi
+    if grep -q mmcblk0p22 /proc/mounts; then
+        nvsrc=$(awk '$1=="/dev/mmcblk0p22"{print $2; exit}' /proc/mounts)
+    else
+        mkdir -p /mnt/wcnssp
+        mount -t ext4 -o ro /dev/mmcblk0p22 /mnt/wcnssp 2>>/tmp/wifi.log && nvsrc=/mnt/wcnssp
+    fi
+    if [ -n "$nvsrc" ] && [ ! -e /lib/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin ]; then
+        cp -f "$nvsrc"/WCNSS_qcom_wlan_nv.bin /lib/firmware/wlan/prima/ 2>>/tmp/wifi.log
+        cp -f "$nvsrc"/WCNSS_wlan_dictionary.dat /lib/firmware/wlan/prima/ 2>/dev/null
+    fi
+    [ "$nvsrc" = /mnt/wcnssp ] && umount /mnt/wcnssp 2>/dev/null
+    echo "[wifi] fw=$(ls /lib/firmware/wcnss.mdt 2>/dev/null && echo ok || echo MISSING) nv=$(ls /lib/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin 2>/dev/null && echo ok || echo MISSING)" >> /tmp/wifi.log
+
     # WCNSS rebind (from the initramfs /init): the remoteproc probed at
     # ~1s, BEFORE the root filesystem was mounted, so its initial
     # request_firmware(wcnss.mdt) failed and it sits offline.  The
