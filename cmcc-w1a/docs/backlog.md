@@ -190,7 +190,7 @@ sndmix /dev/snd/controlC0 "SPK DAC Switch" 1
 cd linux-mainline
 make O=../ml-out ARCH=arm CROSS_COMPILE=arm-none-eabi- -j$(nproc) zImage dtbs
 cd ..
-W1A_OUT=asteroid-mainline-w1a-XXX.img W1A_CMD='w1a.no_dsi_pa w1a.mode=display log_buf_len=8M ' bash tools/build-boot-img-nord.sh
+W1A_OUT=asteroid-mainline-w1a-XXX.img W1A_CMD='w1a.no_dsi_pa w1a.mode=display log_buf_len=8M ' bash tools/build-boot-img.sh
 fastboot boot asteroid-mainline-w1a-XXX.img
 ssh root@192.168.2.1        # usbnet 192.168.2.1
 ```

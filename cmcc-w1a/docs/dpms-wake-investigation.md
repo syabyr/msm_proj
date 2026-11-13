@@ -7,7 +7,7 @@
 >
 > 代码分支：`cmcc-w1a-7.0`
 > 关键提交：`f457841fd2e2`（v50 keepalive）、`fb4ba6975617`（v51 stability）
-> 可用镜像：用 `asteroid/tools/build-boot-img-nord.sh` 从当前 `ml-out` 重新构建
+> 可用镜像：用 `asteroid/tools/build-boot-img.sh` 从当前 `ml-out` 重新构建
 > 一个 p33 正常启动镜像（原 `keepalive2.img` 已清理）
 
 ---
@@ -213,7 +213,7 @@ echo 40 > /sys/class/backlight/1ac8000.dsi.0/brightness
 ```sh
 # 从当前 ml-out 构建 p33 正常启动镜像（原 keepalive2.img 已清理）
 cd /home/mybays/develop/build/cmcc-w1a
-W1A_OUT=w1a-p33.img bash asteroid/tools/build-boot-img-nord.sh
+W1A_OUT=w1a-p33.img bash asteroid/tools/build-boot-img.sh
 # 启动镜像（p20 = 512KB lk2nd + OS 镜像，偏移 512K）
 fastboot boot w1a-p33.img
 # 或写入 p20：
