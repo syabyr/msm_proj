@@ -1,27 +1,23 @@
 #!/bin/bash
-# build-boot-img-nord.sh - boot image WITHOUT ramdisk (p33 = rootfs)
+# build-boot-img.sh - assemble kernel.img for the W1A boot partition (p20@512K)
 #
-# Usage: tools/build-boot-img-nord.sh [output.img] [--cmdline "extra"]
-#   output.img  relative (to asteroid/) or absolute path.
-#               default: asteroid-mainline-w1a-nord.img
-#   --cmdline   extra cmdline; default from W1A_CMD, else the standard
-#               root= variant (see below)
+# Usage: tools/build-boot-img.sh [output.img] [--cmdline "extra"]
+#   output.img  relative (to the source root) or absolute path.
+#               default: alpine/out/kernel.img
+#   --cmdline   extra cmdline; default from W1A_CMD, else the p21 variant
 #
-# Assembles an Android boot v1 image with kernel (zImage + appended
-# W1A DTB) and a ZERO-SIZE ramdisk.  The kernel mounts /dev/mmcblk0p33
-# (Alpine rootfs) directly as the root filesystem via:
-#   root=/dev/mmcblk0p33 rootwait rw
-# No initramfs: firmware staging and the WCNSS rebind the ramdisk init
-# used to do are NOT performed - bake what you need into the rootfs
-# (/lib/firmware) or accept the limitations (see docs/backlog.md).
+# Android boot v1 image with RAMDISK_SIZE 0: the kernel mounts the root
+# partition directly (default root=/dev/mmcblk0p21; set W1A_CMD for
+# p33).  zImage + appended W1A DTB, so lk2nd finds the FDT at runtime.
+# Flash at p20+512K or `fastboot boot` it.
 #
 # Requires: zImage + dtb built (tools/build-kernel.sh).
 
 set -e
 
 AST="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${W1A_OUT:-$AST/asteroid-mainline-w1a-nord.img}"
-CMDLINE_DEFAULT='w1a.no_dsi_pa root=/dev/mmcblk0p33 rootwait rw log_buf_len=8M '
+OUT="${W1A_OUT:-$AST/alpine/out/kernel.img}"
+CMDLINE_DEFAULT='w1a.no_dsi_pa root=/dev/mmcblk0p21 rootwait rw log_buf_len=8M '
 CMDLINE="$W1A_CMD"
 
 while [ $# -gt 0 ]; do
@@ -32,7 +28,8 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$CMDLINE" ] || CMDLINE="$CMDLINE_DEFAULT"
 
-KERN="${W1A_KERNEL:-$AST/../linux-mainline}"
+KERN="${W1A_KERNEL:-$AST/linux-mainline}"
+[ -d "$KERN" ] || KERN="$AST/../linux-mainline"   # old layout fallback
 KOUT="${W1A_KOUT:-$KERN/../ml-out}"
 ZIMAGE="$KOUT/arch/arm/boot/zImage"
 DTB="$KOUT/arch/arm/boot/dts/qcom/qcom-msm8909-cmcc-w1a.dtb"

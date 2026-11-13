@@ -52,7 +52,7 @@ need mke2fs
 need ssh-keygen
 [ -f "$ZIMAGE" ] || die "kernel not built: $ZIMAGE"
 [ -f "$DTB" ] || die "dtb not built: $DTB"
-[ -f "$AST/tools/build-boot-img-nord.sh" ] || die "missing $AST/tools/build-boot-img-nord.sh"
+[ -f "$AST/tools/build-boot-img.sh" ] || die "missing $AST/tools/build-boot-img.sh"
 
 mkdir -p "$OUT"
 
@@ -60,7 +60,7 @@ mkdir -p "$OUT"
 echo "=== kernel.img (root=/dev/mmcblk0p21, no ramdisk)"
 W1A_KOUT="$KOUT" W1A_OUT="$OUT/kernel.img" \
 	W1A_CMD='w1a.no_dsi_pa root=/dev/mmcblk0p21 rootwait rw log_buf_len=8M ' \
-	bash "$AST/tools/build-boot-img-nord.sh" >/dev/null
+	bash "$AST/tools/build-boot-img.sh" >/dev/null
 python3 - "$OUT/kernel.img" <<'PY'
 import struct, sys
 b = open(sys.argv[1], 'rb').read(2048)
