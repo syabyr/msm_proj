@@ -296,3 +296,8 @@ echo "W1A Alpine Linux $(cat /etc/alpine-release 2>/dev/null)"
 echo "access: telnet port 2323 / ssh root@192.168.2.1 (usb $USB_MODE)"
 echo "apk repo: /srv/apks-iso/armv7"
 echo ""
+
+# p21: the DRM fbdev starts blanked (FB_BLANK_POWERDOWN).  With
+# w1a.no_dsi_pa the command-mode frame stream is healthy, so unblank the
+# panel (background write so a wedged commit can never block init).
+[ -e /sys/class/graphics/fb0/blank ] && echo 0 > /sys/class/graphics/fb0/blank 2>/dev/null &

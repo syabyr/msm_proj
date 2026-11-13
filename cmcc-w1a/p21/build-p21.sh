@@ -32,7 +32,8 @@ OUT="$DIR/out"
 APK_CACHE="${APK_CACHE:-$BUILD_ROOT/recovery/.apk-tools-static}"
 ALPINE_VER="${ALPINE_VER:-v3.24}"
 ALPINE_MIRROR="${ALPINE_MIRROR:-https://mirrors.tuna.tsinghua.edu.cn/alpine}"
-P21_KIB="${P21_KIB:-1258292}"
+P21_KIB="${P21_KIB:-1258292}"       # p21 partition size (resize target)
+IMG_KIB="${P21_IMG_KIB:-131072}"    # rootfs.img size (128 MiB; grown in place)
 
 ZIMAGE="$KOUT/arch/arm/boot/zImage"
 DTB="$KOUT/arch/arm/boot/dts/qcom/qcom-msm8909-cmcc-w1a.dtb"
@@ -158,12 +159,20 @@ else
 	echo "WARN: no passwordless sudo; rootfs stays owned by $(id -un)." >&2
 	echo "      sshd may reject the key - run: sudo chown -R 0:0 $ROOTFS" >&2
 fi
-chmod 700 "$ROOTFS/root" "$ROOTFS/root/.ssh" 2>/dev/null || true
-chmod 600 "$ROOTFS/root/.ssh/authorized_keys" 2>/dev/null || true
+if sudo -n true 2>/dev/null; then
+	sudo -n chmod 700 "$ROOTFS/root" "$ROOTFS/root/.ssh"
+	sudo -n chmod 600 "$ROOTFS/root/.ssh/authorized_keys"
+else
+	chmod 700 "$ROOTFS/root" "$ROOTFS/root/.ssh" 2>/dev/null || true
+	chmod 600 "$ROOTFS/root/.ssh/authorized_keys" 2>/dev/null || true
+fi
 
 # ------------------------------------------------------- 5. ext4 rootfs.img
-echo "=== packing rootfs.img (${P21_KIB} KiB, ext4, mke2fs -d)"
-BLOCKS=$((P21_KIB / 4))
+# The image only needs to hold the rootfs, not the whole partition: write
+# this small image, then `resize2fs /dev/mmcblk0p21` grows it to P21_KIB.
+echo "=== packing rootfs.img (${IMG_KIB} KiB, ext4, mke2fs -d)"
+BLOCKS=$((IMG_KIB / 4))
+rm -f "$OUT/rootfs.img"
 $MKFS -q -F -t ext4 -b 4096 -L w1a-alpine-p21 -d "$ROOTFS" \
 	"$OUT/rootfs.img" "$BLOCKS"
 [ "$(id -u)" -ne 0 ] && sudo -n chown "$(id -u):$(id -g)" "$OUT/rootfs.img" 2>/dev/null || true
@@ -175,7 +184,10 @@ ls -la "$OUT/kernel.img" "$OUT/rootfs.img"
 echo "rootfs.img filesystem:"
 dumpe2fs -h "$OUT/rootfs.img" 2>/dev/null | grep -E 'Filesystem volume name|Block count|Block size|Filesystem state' || true
 echo
-echo "Write the rootfs to p21 (DESTROYS the stock Android system):"
+echo "Write the rootfs to p21 and grow it to ${P21_KIB} KiB (DESTROYS the stock Android system):"
 echo "  cat $OUT/rootfs.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p21 bs=1M'"
+echo "  ssh root@192.168.2.1 'e2fsck -f /dev/mmcblk0p21 && resize2fs /dev/mmcblk0p21'"
+echo "or:"
+echo "  p21/flash-p21.sh"
 echo "Boot it:"
 echo "  fastboot boot $OUT/kernel.img"

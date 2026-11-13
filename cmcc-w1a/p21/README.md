@@ -22,21 +22,34 @@ Outputs:
 | file | size | notes |
 |---|---|---|
 | `out/kernel.img` | ~10.8 MiB | Android boot v1, no ramdisk, cmdline `... root=/dev/mmcblk0p21 rootwait rw w1a.no_dsi_pa ...` |
-| `out/rootfs.img` | 1.2 GiB | ext4, label `w1a-alpine-p21`, exactly p21's size (1,258,292 KiB) |
+| `out/rootfs.img` | 128 MiB | ext4, label `w1a-alpine-p21`; **grown in place** to p21's 1.2 GiB after writing (`P21_IMG_KIB` overrides the size) |
 
 The rootfs is built with the same `apk-tools-static --usermode` method as
-`../recovery/`, then packed with `mke2fs -d` (no root required).
+`../recovery/`, then packed with `mke2fs -d` (no root required; sudo is
+used only for the root ownership and the 128 MiB image).
 
 ## Flash / boot
 
-```bash
-# DESTRUCTIVE: write the rootfs over p21 (stock Android)
-cat out/rootfs.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p21 bs=1M'
+Writing p21 needs p21 **unmounted** and `resize2fs`; the p33 system mounts
+p21 at `/mnt/system` and lacks `resize2fs`, so do it from the **recovery**:
 
-# boot the matching kernel (RAM only, nothing persisted)
-fastboot boot out/kernel.img
-# or persist it at p20+512K (lk2nd is forced-fastboot, so you still
-# `fastboot boot` from the host; flashing p20 is optional)
+```bash
+../recovery/boot-recovery.sh     # fastboot boot the recovery (p21 unmounted)
+./flash-p21.sh                   # dd rootfs.img -> p21, e2fsck + resize2fs
+fastboot boot out/kernel.img     # boot the new p21 rootfs
+```
+
+Manual equivalent (from the recovery):
+
+```bash
+cat out/rootfs.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p21 bs=1M'
+ssh root@192.168.2.1 'e2fsck -f /dev/mmcblk0p21 && resize2fs /dev/mmcblk0p21'
+```
+
+The kernel image can also be persisted at p20+512K (lk2nd is
+forced-fastboot, so you still `fastboot boot` from the host):
+
+```bash
 cat out/kernel.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p20 bs=4096 seek=128 conv=notrunc'
 ```
 
