@@ -1,8 +1,8 @@
 #!/bin/bash
-# build-p21.sh - build a kernel.img that roots on p21 and an Alpine rootfs.img
+# build.sh - build a kernel.img that roots on p21 and an Alpine rootfs.img
 # for the CMCC W1A (MSM8909).
 #
-#   ./build-p21.sh
+#   ./build.sh
 #   -> out/kernel.img   Android boot v1 (no ramdisk), cmdline roots on /dev/mmcblk0p21
 #   -> out/rootfs.img   ext4 filesystem, exactly p21's size (1,258,292 KiB)
 #
@@ -194,6 +194,6 @@ echo "Write the rootfs to p21 and grow it to ${P21_KIB} KiB (DESTROYS the stock 
 echo "  cat $OUT/rootfs.img | ssh root@192.168.2.1 'dd of=/dev/mmcblk0p21 bs=1M'"
 echo "  ssh root@192.168.2.1 'e2fsck -f /dev/mmcblk0p21 && resize2fs /dev/mmcblk0p21'"
 echo "or:"
-echo "  alpine/flash-p21.sh"
+echo "  alpine/flash.sh"
 echo "Boot it:"
 echo "  fastboot boot $OUT/kernel.img"

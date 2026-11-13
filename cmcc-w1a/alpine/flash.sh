@@ -1,5 +1,5 @@
 #!/bin/sh
-# flash-p21.sh - write the rootfs to /dev/mmcblk0p21 and grow the
+# flash.sh - write the rootfs to /dev/mmcblk0p21 and grow the
 # filesystem to fill the whole partition.
 #
 # Uses out/rootfs.img if present, else the committed out/rootfs.img.xz
@@ -10,7 +10,7 @@
 # e2fsck/resize2fs + ssh):
 #
 #   ../recovery/boot-recovery.sh        # fastboot boot the recovery
-#   ./flash-p21.sh                      # write + resize
+#   ./flash.sh                      # write + resize
 #   fastboot boot out/kernel.img        # boot the new p21 rootfs
 set -e
 
@@ -29,7 +29,7 @@ elif [ -f "$XZ" ]; then
 	SRC="$XZ"
 	DECOMP="xz -dc"
 else
-	echo "missing $IMG[.xz] - run build-p21.sh" >&2
+	echo "missing $IMG[.xz] - run build.sh" >&2
 	exit 1
 fi
 

@@ -14,7 +14,7 @@ ssh root@192.168.2.1 'dd if=/dev/mmcblk0p21 bs=1M' > p21-stock-system.img
 
 ```bash
 # kernel must already be built in ../ml-out
-./build-p21.sh
+./build.sh
 ```
 
 Outputs:
@@ -36,7 +36,7 @@ p21 at `/mnt/system` and lacks `resize2fs`, so do it from the **recovery**:
 
 ```bash
 ../recovery/boot-recovery.sh     # fastboot boot the recovery (p21 unmounted)
-./flash-p21.sh                   # dd rootfs.img -> p21, e2fsck + resize2fs
+./flash.sh                   # dd rootfs.img -> p21, e2fsck + resize2fs
 fastboot boot out/kernel.img     # boot the new p21 rootfs
 ```
 
@@ -68,7 +68,7 @@ The kernel mounts p21, runs `/sbin/init` (busybox) → `/etc/inittab`
 
 ```
 alpine/
-├── build-p21.sh        # build pipeline
+├── build.sh        # build pipeline
 ├── packages.txt        # Alpine package list (armv7)
 ├── overlay/            # copied over the apk rootfs
 │   ├── etc/{inittab,fstab,hostname,w1a-init.sh}
