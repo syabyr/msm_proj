@@ -177,6 +177,12 @@ $MKFS -q -F -t ext4 -b 4096 -L w1a-alpine-p21 -d "$ROOTFS" \
 	"$OUT/rootfs.img" "$BLOCKS"
 [ "$(id -u)" -ne 0 ] && sudo -n chown "$(id -u):$(id -g)" "$OUT/rootfs.img" 2>/dev/null || true
 
+# Compressed artifact for the repo (the raw image is 128 MiB).
+if command -v xz >/dev/null 2>&1; then
+	echo "=== compressing rootfs.img.xz"
+	xz -9 -T0 -c "$OUT/rootfs.img" > "$OUT/rootfs.img.xz"
+fi
+
 # ------------------------------------------------------------- 6. report
 echo
 echo "=== outputs"

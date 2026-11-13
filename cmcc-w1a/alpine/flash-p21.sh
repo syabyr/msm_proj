@@ -1,6 +1,9 @@
 #!/bin/sh
-# flash-p21.sh - write out/rootfs.img to /dev/mmcblk0p21 and grow the
+# flash-p21.sh - write the rootfs to /dev/mmcblk0p21 and grow the
 # filesystem to fill the whole partition.
+#
+# Uses out/rootfs.img if present, else the committed out/rootfs.img.xz
+# (decompressed on the fly).
 #
 # DESTROYS the stock Android system on p21.  Run it while the watch is in
 # the RECOVERY (p21 is not mounted there, and the recovery has
@@ -13,17 +16,28 @@ set -e
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 IMG="$DIR/out/rootfs.img"
+XZ="$DIR/out/rootfs.img.xz"
 KERNEL="$DIR/out/kernel.img"
 DEV="${W1A_DEV:-192.168.2.1}"
 SSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$DEV"
 
-[ -f "$IMG" ] || { echo "missing $IMG - run build-p21.sh" >&2; exit 1; }
+if [ -f "$IMG" ]; then
+	SRC="$IMG"
+	DECOMP="cat"
+elif [ -f "$XZ" ]; then
+	command -v xz >/dev/null || { echo "xz missing" >&2; exit 1; }
+	SRC="$XZ"
+	DECOMP="xz -dc"
+else
+	echo "missing $IMG[.xz] - run build-p21.sh" >&2
+	exit 1
+fi
 
 echo "=== checking $DEV"
 $SSH 'hostname; grep -q "mmcblk0p21 " /proc/mounts && { echo "p21 is mounted; boot the recovery first"; exit 1; }; command -v resize2fs >/dev/null || { echo "no resize2fs here; use the recovery"; exit 1; }'
 
-echo "=== writing $IMG ($(stat -c%s "$IMG") bytes) to /dev/mmcblk0p21"
-cat "$IMG" | $SSH 'dd of=/dev/mmcblk0p21 bs=1M; sync'
+echo "=== writing $SRC to /dev/mmcblk0p21"
+$DECOMP "$SRC" | $SSH 'dd of=/dev/mmcblk0p21 bs=1M; sync'
 
 echo "=== growing the filesystem to the full p21 partition"
 $SSH 'e2fsck -f -y /dev/mmcblk0p21 && resize2fs /dev/mmcblk0p21 && dumpe2fs -h /dev/mmcblk0p21 2>/dev/null | grep -E "Block count|Filesystem state"'

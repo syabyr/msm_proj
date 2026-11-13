@@ -23,6 +23,7 @@ Outputs:
 |---|---|---|
 | `out/kernel.img` | ~10.8 MiB | Android boot v1, no ramdisk, cmdline `... root=/dev/mmcblk0p21 rootwait rw w1a.no_dsi_pa ...` |
 | `out/rootfs.img` | 128 MiB | ext4, label `w1a-alpine-p21`; **grown in place** to p21's 1.2 GiB after writing (`P21_IMG_KIB` overrides the size) |
+| `out/rootfs.img.xz` | ~10 MiB | compressed artifact committed to `msm_proj/cmcc-w1a/alpine/` (the raw 128 MiB image is gitignored) |
 
 The rootfs is built with the same `apk-tools-static --usermode` method as
 `../recovery/`, then packed with `mke2fs -d` (no root required; sudo is
